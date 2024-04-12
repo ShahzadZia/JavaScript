@@ -155,7 +155,7 @@
 
     /* Larger search input styles */
     #search-input {
-      width: 100%;
+      width: 50%; /* Adjust width as needed */
       padding: 1rem;
       font-size: 1.2rem;
       font-family: Arial, sans-serif;
@@ -346,7 +346,7 @@
               // Display UI for searching records by patient's name
               document.getElementById("main-content").innerHTML = `
                 <h2>Search Records by Patient's Name</h2>
-                <input type="text" id="search-input" placeholder="Enter patient's name">
+                <input type="text" id="search-input" placeholder="Enter patient's name" style="width: 50%;">
                 <button id="search-button" class="btn">Search</button>
                 <div id="search-results"></div>
               `;
@@ -421,7 +421,7 @@
               // Display UI for searching records by patient's name
               document.getElementById("main-content").innerHTML = `
                 <h2>Search Records by Patient's Name</h2>
-                <input type="text" id="search-input" placeholder="Enter patient's name">
+                <input type="text" id="search-input" placeholder="Enter patient's name" style="width: 50%;">
                 <button id="search-button" class="btn">Search</button>
                 <div id="search-results"></div>
               `;
