@@ -40,6 +40,10 @@
       margin-right: 1rem;
     }
 
+    nav ul li:not(:last-child) {
+      display: none; /* Hide all nav items except the last one */
+    }
+
     nav ul li a {
       color: #fff;
       text-decoration: none;
@@ -55,12 +59,12 @@
     /* Main content styles */
     main {
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
       padding: 2rem;
     }
 
     .dashboard {
-      width: 250px;
+      width: 100%;
       background-color: #005c97;
       color: #fff;
       padding: 1rem;
@@ -148,6 +152,74 @@
     .btn:hover {
       background-color: #0056b3;
     }
+
+    /* Larger search input styles */
+    #search-input {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      font-family: Arial, sans-serif;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Form styles */
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* Media queries for mobile responsiveness */
+    @media screen and (min-width: 768px) {
+      main {
+        flex-direction: row;
+      }
+
+      .dashboard {
+        width: 250px;
+      }
+
+      .content {
+        flex-grow: 1;
+        margin-left: 2rem;
+      }
+
+      .dashboard ul li {
+        margin-bottom: 1rem;
+      }
+
+      table {
+        margin-bottom: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -155,11 +227,7 @@
     <h1>ABA CRM</h1>
     <nav>
       <ul>
-        <li><a href="#" class="nav-item">Home</a></li>
-        <li><a href="#" class="nav-item">Appointments</a></li>
-        <li><a href="#" class="nav-item">Treatment Plans</a></li>
-        <li><a href="#" class="nav-item">Data Analysis</a></li>
-        <li><a href="#" class="nav-item">Take Notes</a></li>
+        <li><a href="#" class="nav-item">Search records by Patient's Name</a></li>
       </ul>
     </nav>
   </header>
@@ -175,7 +243,7 @@
     <section class="content" id="main-content">
       <!-- Main content section -->
       <h2>Welcome to ABA CRM</h2>
-      <p>Select a dashboard item or navigation link to view data.</p>
+      <p>Select a dashboard item or enter a patient's name to search.</p>
     </section>
   </main>
 
@@ -192,16 +260,19 @@
         { name: "Treatment Plan Overview", data: generateDummyData(10), columns: ["ID", "Patient Name", "Assigned Therapist", "Start Date"] },
         { name: "Recent Progress Reports", data: generateDummyData(8), columns: ["ID", "Patient Name", "Date", "Therapist"] },
         { name: "Data Analysis", data: generateDummyData(12), columns: ["ID", "Patient Name", "Diagnosis", "Age", "Gender"] },
-        { name: "Take Notes", data: null, columns: null } // Placeholder for Take Notes functionality
+        { name: "Take Notes", data: null, columns: null }, // Placeholder for Take Notes functionality
+        { name: "Search records by Patient's Name", data: null, columns: null }, // Placeholder for Search functionality
+        { name: "Add New Patient Record", data: null, columns: null } // Placeholder for Add New Patient Record functionality
       ];
 
       // Function to generate dummy data for tables
       function generateDummyData(rows) {
         const data = [];
+        const patientNames = ["Jack", "Sam", "Noor", "Emily", "Aiden", "Emma", "Liam", "Olivia", "Ethan", "Sophia"];
         for (let i = 1; i <= rows; i++) {
           data.push({
             ID: i,
-            "Patient Name": `Patient ${i}`,
+            "Patient Name": patientNames[Math.floor(Math.random() * patientNames.length)],
             "Appointment Time": `2024-04-${i} 10:00 AM`,
             Therapist: `Therapist ${Math.floor(Math.random() * 5) + 1}`,
             "Assessment Type": Math.random() < 0.5 ? "Initial Assessment" : "Progress Assessment",
@@ -250,7 +321,7 @@
           listItem.appendChild(link);
           dashboardList.appendChild(listItem);
 
-          // Add click event listener to dashboard items to display table
+          // Add click event listener to dashboard items to display table or form
           link.addEventListener("click", function(event) {
             event.preventDefault();
             if (item.name === "Take Notes") {
@@ -271,6 +342,66 @@
                 // Optionally, clear the textarea after submission
                 document.getElementById("notes-textarea").value = "";
               });
+            } else if (item.name === "Search records by Patient's Name") {
+              // Display UI for searching records by patient's name
+              document.getElementById("main-content").innerHTML = `
+                <h2>Search Records by Patient's Name</h2>
+                <input type="text" id="search-input" placeholder="Enter patient's name">
+                <button id="search-button" class="btn">Search</button>
+                <div id="search-results"></div>
+              `;
+              
+              // Add event listener to search button
+              const searchButton = document.getElementById("search-button");
+              searchButton.addEventListener("click", function() {
+                const searchInput = document.getElementById("search-input").value.trim();
+                const searchResults = searchRecordsByPatientName(searchInput);
+                document.getElementById("search-results").innerHTML = generateTableHTML(searchResults, ["ID", "Patient Name", "Date", "Therapist"]);
+              });
+            } else if (item.name === "Add New Patient Record") {
+              // Display form for adding new patient record
+              document.getElementById("main-content").innerHTML = `
+                <div class="form-container">
+                  <h2>Add New Patient Record</h2>
+                  <form id="add-patient-form">
+                    <div class="form-group">
+                      <label for="patient-name">Patient Name</label>
+                      <input type="text" id="patient-name" name="patient-name" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="appointment-date">Appointment Date</label>
+                      <input type="date" id="appointment-date" name="appointment-date" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="therapist">Assigned Therapist</label>
+                      <select id="therapist" name="therapist" required>
+                        <option value="">Select Therapist</option>
+                        <option value="Therapist 1">Therapist 1</option>
+                        <option value="Therapist 2">Therapist 2</option>
+                        <option value="Therapist 3">Therapist 3</option>
+                        <option value="Therapist 4">Therapist 4</option>
+                        <option value="Therapist 5">Therapist 5</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn">Add Record</button>
+                  </form>
+                </div>
+              `;
+              
+              // Add event listener to form submission
+              const addPatientForm = document.getElementById("add-patient-form");
+              addPatientForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                const formData = new FormData(addPatientForm);
+                const newRecord = {};
+                formData.forEach((value, key) => {
+                  newRecord[key] = value;
+                });
+                // Here you can handle the submission of the new patient record, such as sending it to a server or storing it locally
+                console.log("New Patient Record:", newRecord);
+                // Optionally, clear the form fields after submission
+                addPatientForm.reset();
+              });
             } else {
               document.getElementById("main-content").innerHTML = generateTableHTML(item.data, item.columns);
             }
@@ -286,31 +417,31 @@
             event.preventDefault();
             const itemName = this.textContent.trim();
             const clickedItem = dashboardItems.find(dashboardItem => dashboardItem.name === itemName);
-            if (clickedItem) {
-              if (itemName === "Take Notes") {
-                // Display UI for taking notes
-                document.getElementById("main-content").innerHTML = `
-                  <h2>Take Notes</h2>
-                  <textarea id="notes-textarea" rows="10" cols="50"></textarea>
-                  <br>
-                  <button id="submit-notes" class="btn">Submit</button>
-                `;
-                
-                // Add event listener to submit button
-                const submitButton = document.getElementById("submit-notes");
-                submitButton.addEventListener("click", function() {
-                  const notes = document.getElementById("notes-textarea").value;
-                  // Here you can handle the submission of notes, such as sending them to a server or storing them locally
-                  console.log("Notes submitted:", notes);
-                  // Optionally, clear the textarea after submission
-                  document.getElementById("notes-textarea").value = "";
-                });
-              } else {
-                document.getElementById("main-content").innerHTML = generateTableHTML(clickedItem.data, clickedItem.columns);
-              }
+            if (clickedItem && itemName === "Search records by Patient's Name") {
+              // Display UI for searching records by patient's name
+              document.getElementById("main-content").innerHTML = `
+                <h2>Search Records by Patient's Name</h2>
+                <input type="text" id="search-input" placeholder="Enter patient's name">
+                <button id="search-button" class="btn">Search</button>
+                <div id="search-results"></div>
+              `;
+              
+              // Add event listener to search button
+              const searchButton = document.getElementById("search-button");
+              searchButton.addEventListener("click", function() {
+                const searchInput = document.getElementById("search-input").value.trim();
+                const searchResults = searchRecordsByPatientName(searchInput);
+                document.getElementById("search-results").innerHTML = generateTableHTML(searchResults, ["ID", "Patient Name", "Date", "Therapist"]);
+              });
             }
           });
         });
+      }
+
+      // Function to search records by patient's name
+      function searchRecordsByPatientName(name) {
+        const allData = [].concat(...dashboardItems.filter(item => item.data).map(item => item.data)); // Flatten the data array
+        return allData.filter(record => record["Patient Name"].toLowerCase().includes(name.toLowerCase()));
       }
 
       // Populate dashboard initially
