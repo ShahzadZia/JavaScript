@@ -133,6 +133,21 @@
       text-align: center;
       clear: both;
     }
+
+    /* Button styles */
+    .btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +159,7 @@
         <li><a href="#" class="nav-item">Appointments</a></li>
         <li><a href="#" class="nav-item">Treatment Plans</a></li>
         <li><a href="#" class="nav-item">Data Analysis</a></li>
+        <li><a href="#" class="nav-item">Take Notes</a></li>
       </ul>
     </nav>
   </header>
@@ -175,7 +191,8 @@
         { name: "Upcoming Assessments", data: generateDummyData(7), columns: ["ID", "Patient Name", "Assessment Type", "Scheduled Date"] },
         { name: "Treatment Plan Overview", data: generateDummyData(10), columns: ["ID", "Patient Name", "Assigned Therapist", "Start Date"] },
         { name: "Recent Progress Reports", data: generateDummyData(8), columns: ["ID", "Patient Name", "Date", "Therapist"] },
-        { name: "Data Analysis", data: generateDummyData(12), columns: ["ID", "Patient Name", "Diagnosis", "Age", "Gender"] }
+        { name: "Data Analysis", data: generateDummyData(12), columns: ["ID", "Patient Name", "Diagnosis", "Age", "Gender"] },
+        { name: "Take Notes", data: null, columns: null } // Placeholder for Take Notes functionality
       ];
 
       // Function to generate dummy data for tables
@@ -236,7 +253,27 @@
           // Add click event listener to dashboard items to display table
           link.addEventListener("click", function(event) {
             event.preventDefault();
-            document.getElementById("main-content").innerHTML = generateTableHTML(item.data, item.columns);
+            if (item.name === "Take Notes") {
+              // Display UI for taking notes
+              document.getElementById("main-content").innerHTML = `
+                <h2>Take Notes</h2>
+                <textarea id="notes-textarea" rows="10" cols="50"></textarea>
+                <br>
+                <button id="submit-notes" class="btn">Submit</button>
+              `;
+              
+              // Add event listener to submit button
+              const submitButton = document.getElementById("submit-notes");
+              submitButton.addEventListener("click", function() {
+                const notes = document.getElementById("notes-textarea").value;
+                // Here you can handle the submission of notes, such as sending them to a server or storing them locally
+                console.log("Notes submitted:", notes);
+                // Optionally, clear the textarea after submission
+                document.getElementById("notes-textarea").value = "";
+              });
+            } else {
+              document.getElementById("main-content").innerHTML = generateTableHTML(item.data, item.columns);
+            }
           });
         });
       }
@@ -250,7 +287,27 @@
             const itemName = this.textContent.trim();
             const clickedItem = dashboardItems.find(dashboardItem => dashboardItem.name === itemName);
             if (clickedItem) {
-              document.getElementById("main-content").innerHTML = generateTableHTML(clickedItem.data, clickedItem.columns);
+              if (itemName === "Take Notes") {
+                // Display UI for taking notes
+                document.getElementById("main-content").innerHTML = `
+                  <h2>Take Notes</h2>
+                  <textarea id="notes-textarea" rows="10" cols="50"></textarea>
+                  <br>
+                  <button id="submit-notes" class="btn">Submit</button>
+                `;
+                
+                // Add event listener to submit button
+                const submitButton = document.getElementById("submit-notes");
+                submitButton.addEventListener("click", function() {
+                  const notes = document.getElementById("notes-textarea").value;
+                  // Here you can handle the submission of notes, such as sending them to a server or storing them locally
+                  console.log("Notes submitted:", notes);
+                  // Optionally, clear the textarea after submission
+                  document.getElementById("notes-textarea").value = "";
+                });
+              } else {
+                document.getElementById("main-content").innerHTML = generateTableHTML(clickedItem.data, clickedItem.columns);
+              }
             }
           });
         });
