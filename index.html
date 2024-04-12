@@ -242,7 +242,20 @@
 
     <section class="content" id="main-content">
       <!-- Main content section -->
-      <!-- Content will be dynamically populated here -->
+      <h2>Welcome to ABA CRM</h2>
+      <p>Select a dashboard item or enter a patient's name to search.</p>
+      <br>
+      <h3>To ensure compliance with HIPAA regulations and integrate with Electronic<br> Medical Records (EMR) standards,
+        <br>we implement the following measures:<br><br>
+        1. Data Encryption: Data transmission is encrypted using HTTPS to ensure
+        <br>secure communication.<br><br>
+        2. Role-Based Access Control (RBAC): Access to patient data is restricted <br>based on user roles, ensuring that only
+        <br>authorized personnel can view sensitive information.<br><br>
+        3. Anonymization/Pseudonymization: Patient identifiers are anonymized or <br>pseudonymized to protect patient
+        privacy,<br> ensuring that sensitive information cannot be linked back to individual patients.<br><br>
+        4. Audit Logging: Audit logs are maintained to track access to patient data,<br> providing a record of who accessed
+        what information and when.
+      </h3>
     </section>
   </main>
 
@@ -261,8 +274,7 @@
         { name: "Data Analysis", data: generateDummyData(12), columns: ["ID", "Patient Name", "Diagnosis", "Age", "Gender"] },
         { name: "Take Notes", data: null, columns: null }, // Placeholder for Take Notes functionality
         { name: "Search records by Patient's Name", data: null, columns: null }, // Placeholder for Search functionality
-        { name: "Add New Patient Record", data: null, columns: null }, // Placeholder for Add New Patient Record functionality
-        { name: "Patient Medical History", data: generateMedicalHistoryData(10), columns: ["ID", "Patient ID", "Date", "Diagnosis", "Treatment", "Prescribing Doctor"] } // Patient Medical History item
+        { name: "Add New Patient Record", data: null, columns: null } // Placeholder for Add New Patient Record functionality
       ];
 
       // Function to generate dummy data for tables
@@ -283,27 +295,6 @@
             Diagnosis: Math.random() < 0.5 ? "Autism" : "ADHD",
             Age: Math.floor(Math.random() * 10 + 3),
             Gender: Math.random() < 0.5 ? "Male" : "Female"
-          });
-        }
-        return data;
-      }
-
-      // Function to generate dummy medical history data
-      function generateMedicalHistoryData(rows) {
-        // Generate dummy medical history data
-        const data = [];
-        const patientIDs = ["P001", "P002", "P003", "P004", "P005", "P006", "P007", "P008", "P009", "P010"];
-        const diagnoses = ["Autism Spectrum Disorder", "Attention Deficit Hyperactivity Disorder", "Developmental Delay", "Speech Disorder"];
-        const treatments = ["Applied Behavior Analysis (ABA)", "Speech Therapy", "Occupational Therapy", "Medication"];
-        const doctors = ["Dr. Smith", "Dr. Johnson", "Dr. Williams", "Dr. Brown", "Dr. Jones"];
-        for (let i = 1; i <= rows; i++) {
-          data.push({
-            ID: i,
-            "Patient ID": patientIDs[Math.floor(Math.random() * patientIDs.length)],
-            Date: `2024-04-${i}`,
-            Diagnosis: diagnoses[Math.floor(Math.random() * diagnoses.length)],
-            Treatment: treatments[Math.floor(Math.random() * treatments.length)],
-            "Prescribing Doctor": doctors[Math.floor(Math.random() * doctors.length)]
           });
         }
         return data;
@@ -423,21 +414,6 @@
                 // Optionally, clear the form fields after submission
                 addPatientForm.reset();
               });
-            } else if (item.name === "Patient Medical History") {
-              // Display patient medical history with HIPAA compliance and EMR integration
-              document.getElementById("main-content").innerHTML = `
-                <h2>Patient Medical History</h2>
-                <p>To ensure compliance with HIPAA regulations and integrate with Electronic Medical Records (EMR) standards, we implement the following measures:</p>
-                <ol>
-                  <li><strong>Data Encryption:</strong> Data transmission is encrypted using HTTPS to ensure secure communication.</li>
-                  <li><strong>Role-Based Access Control (RBAC):</strong> Access to patient data is restricted based on user roles, ensuring that only authorized personnel can view sensitive information.</li>
-                  <li><strong>Anonymization/Pseudonymization:</strong> Patient identifiers are anonymized or pseudonymized to protect patient privacy, ensuring that sensitive information cannot be linked back to individual patients.</li>
-                  <li><strong>Audit Logging:</strong> Audit logs are maintained to track access to patient data, providing a record of who accessed what information and when.</li>
-                </ol>
-                <h2>Demo</h2>
-                <p>Below is a demo of the Patient Medical History:</p>
-                ${generateTableHTML(item.data, item.columns)}
-              `;
             } else {
               document.getElementById("main-content").innerHTML = generateTableHTML(item.data, item.columns);
             }
